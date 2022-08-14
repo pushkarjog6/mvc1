@@ -4,16 +4,17 @@ const router = express.Router()
 const Book = require('../models/book')
 const Author = require('../models/author')
 
-const multer = require('multer')
-const path = require('path')
-const uploadPath = path.join('public',Book.coverImageBasePath)
 const imageMimeTypes = ['image/jpeg','image/png','image/gif']
-const upload = multer({
-    dest: uploadPath,
-    fileFilter: (req,file,callback) =>{
-        callback(null, imageMimeTypes.includes(file.mimetype))
-    }
-})
+
+// const multer = require('multer')
+// const path = require('path')
+// const uploadPath = path.join('public',Book.coverImageBasePath)
+// const upload = multer({
+//     dest: uploadPath,
+//     fileFilter: (req,file,callbackW) =>{
+//         callback(null, imageMimeTypes.includes(file.mimetype))
+//     }
+// })
 
 const fs = require('fs')
 
@@ -49,16 +50,17 @@ router.get('/new', async(req,res)=>{
 
 })
 
-router.post('/', upload.single('coverImageName'),async(req,res)=>{
+router.post('/', async(req,res)=>{
     const fileName = req.file != null ? req.file.filename : null
     const book = new Book({
         title:req.body.title,
         author: req.body.author.trim(),
         publishDate: new Date(req.body.publishDate),
         pageCount: req.body.pageCount,
-        coverImageName: fileName,
         description: req.body.description
     })
+
+    saveCover(book,req.body.cover)
     // if(mongoose.Types.ObjectId.isValid(req.body.author)) console.log('valid hai bsdk')
     // else console.log('js hi chutiya hai bhenchod')
     // console.log(typeof(req.body.author))
@@ -71,9 +73,6 @@ router.post('/', upload.single('coverImageName'),async(req,res)=>{
     } catch (error) {
         // console.log('hola error')
         console.log(error)
-        if(book.coverImageName!=null){
-            removeBookCover(book.coverImageName)
-        }
         renderNewPage(res,book,true, error)
     }
 
@@ -100,8 +99,23 @@ async function renderNewPage(res, book, hasError=false,error) {
     }
 }
 
-function removeBookCover(filename) {
-    fs.unlink(path.join(uploadPath,filename),(err)=> {
-        console.error(err)
-    })
+// function removeBookCover(filename) {
+//     fs.unlink(path.join(uploadPath,filename),(err)=> {
+//         console.error(err)
+//     })
+// }
+
+function saveCover(book, coverEncoded) {
+    if(coverEncoded == null){
+        console.log('error1')
+        return
+    }
+    const cover = JSON.parse(coverEncoded)
+    console.log(cover)
+    if(cover != null && imageMimeTypes.includes(cover.type)){
+        book.coverImage = new Buffer.from(cover.data,'base64')
+        book.coverImageType = cover.type
+    } else {
+        console.log('error2')
+    }
 }

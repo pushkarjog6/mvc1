@@ -24,9 +24,13 @@ const bookSchema = new mongoose.Schema({
         default: Date.now,
         required: true
     },
-    coverImageName: {
-        type:String,
+    coverImage: {
+        type:Buffer,
         required: true
+    },
+    coverImageType:{
+        type:String,
+        required:true
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,
@@ -37,10 +41,14 @@ const bookSchema = new mongoose.Schema({
 })
 
 bookSchema.virtual('coverImagePath').get(function(){
-    if(this.coverImageName != null){
-        return path.join('/',coverImageBasePath,this.coverImageName)
+    if(this.coverImage != null && this.coverImageType!=null){
+        const ans = `data:${this.coverImageType};charset=utf-8;base64,${this.coverImage.toString('base64')}`
+        // console.log(`for ${this.title} coverimagpath is ${ans}`)
+        return ans
     } else {
-        console.log(`img not found for record ${this.title}`)
+        // console.log(`img not found for record ${this.title}`)
+        // if(this.coverImageName == null) console.log('fu1')
+        // if(this.coverImageType == null) console.log('fu2')
     }
 })
 
