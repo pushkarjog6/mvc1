@@ -25,7 +25,7 @@ router.get('/', async(req,res)=>{
     
     if(req.query.title != null && req.query.title != ''){
         query = query.regex('title', new RegExp(req.query.title,'i'))
-        console.log(query)
+        // console.log(query)
     }
     if(req.query.publishedBefore != null && req.query.publishedBefore != ''){
         query = query.lte('publishDate',req.query.publishedBefore)
@@ -69,7 +69,7 @@ router.post('/', async(req,res)=>{
     try {
         const newBook = await book.save()
         // res.redirect(`books/${newBook.id}`)
-        res.redirect('books')
+        res.redirect('/books')
     } catch (error) {
         // console.log('hola error')
         console.log(error)
@@ -111,7 +111,7 @@ function saveCover(book, coverEncoded) {
         return
     }
     const cover = JSON.parse(coverEncoded)
-    console.log(cover)
+    // console.log(cover)
     if(cover != null && imageMimeTypes.includes(cover.type)){
         book.coverImage = new Buffer.from(cover.data,'base64')
         book.coverImageType = cover.type
