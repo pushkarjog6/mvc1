@@ -1,1 +1,8 @@
-Middle index
+<h2>Recently added</h2>
+<div>
+    <% books.forEach(book => { %>
+        <img height="150" width = "100" src="<%= book.coverImagePath %>" alt="bkl">
+        <!-- <h2><%= `${book.coverImagePath}` %> </h2>
+        <h2><%= `${book.title}` %> </h2> -->
+    <% }); %> 
+</div>  

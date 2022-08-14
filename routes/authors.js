@@ -43,6 +43,7 @@ router.post('/', async (req,res)=> {
             author: author,
             errorMessage: 'Error creating author'
         })
+        console.log(error)
     }
 })
 
