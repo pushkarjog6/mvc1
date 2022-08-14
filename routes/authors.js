@@ -90,6 +90,7 @@ router.put('/:id',async (req,res)=>{
         res.redirect(`/authors/${author.id}`)
         // res.redirect('authors')
     } catch (error) {
+        console.log(error)
         if(author == null){
             res.redirect('/')
         }
@@ -98,7 +99,6 @@ router.put('/:id',async (req,res)=>{
             author: author,
             errorMessage: 'Error updating author'
         })
-        console.log(error)
     }
 
 })
